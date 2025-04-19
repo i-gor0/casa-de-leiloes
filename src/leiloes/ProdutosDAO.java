@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.Connection;
 import javax.swing.JOptionPane;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 
@@ -47,6 +48,29 @@ public class ProdutosDAO {
     public ArrayList<ProdutosDTO> listarProdutos(){
         
         return listagem;
+    }
+    public void venderProdutos (int idProduto){
+        Connection conn = new conectaDAO().connectDB();
+        
+        String sql = "UPDATE produtos SET status = ? WHERE id = ?";
+            try {
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                stmt.setString(1, "Vendido");
+                stmt.setInt(2, idProduto); // 'idProduto' deve ser uma variável contendo o ID do produto
+
+                int rowsUpdated = stmt.executeUpdate();
+
+                if (rowsUpdated > 0) {
+                    JOptionPane.showMessageDialog(null, "Produto marcado como vendido com sucesso.");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Nenhum produto encontrado com o ID fornecido.");
+                }
+
+                stmt.close();
+                conn.close();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Erro ao excluir produto: " + e.getMessage());
+            }
     }
 }
 
